@@ -71,20 +71,33 @@
     display: none !important;
   }
 
-  .prose, .prose h1, .prose h2, .prose h3, .prose h4, .prose p, .prose li {
+  .prose,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose p,
+  .prose li {
     color: black !important;
   }
-  
+
   .dark .prose {
-     --tw-prose-body: #374151;
-     --tw-prose-headings: #111827;
+    --tw-prose-body: #374151;
+    --tw-prose-headings: #111827;
   }
 
-  main, .card, .badge {
+  main,
+  .card,
+  .badge {
     break-inside: avoid;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     break-after: avoid;
   }
 
