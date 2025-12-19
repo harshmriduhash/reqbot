@@ -1,12 +1,12 @@
-import { ImageResponse } from 'next/og'
+import { ImageResponse } from "next/og";
 
-export const runtime = 'edge'
+export const runtime = "edge";
 
 export const size = {
   width: 32,
   height: 32,
-}
-export const contentType = 'image/png'
+};
+export const contentType = "image/png";
 
 export default function Icon() {
   return new ImageResponse(
@@ -14,15 +14,15 @@ export default function Icon() {
       <div
         style={{
           fontSize: 24,
-          background: '#111827',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#5DADE2',
-          borderRadius: '8px',
-          fontWeight: 'bold',
+          background: "#111827",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#5DADE2",
+          borderRadius: "8px",
+          fontWeight: "bold",
         }}
       >
         RB
@@ -31,5 +31,5 @@ export default function Icon() {
     {
       ...size,
     }
-  )
+  );
 }
