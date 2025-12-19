@@ -1,14 +1,15 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from '@/components/providers/theme-provider';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: 'ReqBot – AI Business Analyst',
-  description: 'Elicit and refine project requirements with an AI-powered business analyst.',
+  title: "ReqBot – AI Business Analyst",
+  description:
+    "Elicit and refine project requirements with an AI-powered business analyst.",
 };
 
 export default function RootLayout({
