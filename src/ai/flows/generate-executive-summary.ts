@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 /**
  * @fileOverview This flow generates an executive summary from requirements.
@@ -8,20 +8,23 @@
  * - GenerateExecutiveSummaryOutput - The return type for the function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import { Requirement } from '@/lib/types';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
+import { Requirement } from "@/lib/types";
 
 const GenerateExecutiveSummaryInputSchema = z.object({
   requirements: z.array(z.custom<Requirement>()),
 });
-export type GenerateExecutiveSummaryInput = z.infer<typeof GenerateExecutiveSummaryInputSchema>;
+export type GenerateExecutiveSummaryInput = z.infer<
+  typeof GenerateExecutiveSummaryInputSchema
+>;
 
 const GenerateExecutiveSummaryOutputSchema = z.object({
   summary: z.string().describe("The executive summary in HTML format."),
 });
-export type GenerateExecutiveSummaryOutput = z.infer<typeof GenerateExecutiveSummaryOutputSchema>;
-
+export type GenerateExecutiveSummaryOutput = z.infer<
+  typeof GenerateExecutiveSummaryOutputSchema
+>;
 
 export async function generateExecutiveSummary(
   input: GenerateExecutiveSummaryInput
@@ -30,7 +33,7 @@ export async function generateExecutiveSummary(
 }
 
 const prompt = ai.definePrompt({
-  name: 'generateExecutiveSummaryPrompt',
+  name: "generateExecutiveSummaryPrompt",
   input: { schema: GenerateExecutiveSummaryInputSchema },
   output: { schema: GenerateExecutiveSummaryOutputSchema },
   prompt: `You are an expert business analyst. Based on the following requirements, write a concise executive summary for a project report.
@@ -53,7 +56,7 @@ Output the entire summary as a single HTML string, using paragraphs (<p>) for st
 
 const generateExecutiveSummaryFlow = ai.defineFlow(
   {
-    name: 'generateExecutiveSummaryFlow',
+    name: "generateExecutiveSummaryFlow",
     inputSchema: GenerateExecutiveSummaryInputSchema,
     outputSchema: GenerateExecutiveSummaryOutputSchema,
   },
