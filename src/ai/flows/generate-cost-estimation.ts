@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 /**
  * @fileOverview This flow generates a high-level cost estimation report.
@@ -8,20 +8,25 @@
  * - GenerateCostEstimationOutput - The return type for the function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import { Requirement } from '@/lib/types';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
+import { Requirement } from "@/lib/types";
 
 const GenerateCostEstimationInputSchema = z.object({
   requirements: z.array(z.custom<Requirement>()),
 });
-export type GenerateCostEstimationInput = z.infer<typeof GenerateCostEstimationInputSchema>;
+export type GenerateCostEstimationInput = z.infer<
+  typeof GenerateCostEstimationInputSchema
+>;
 
 const GenerateCostEstimationOutputSchema = z.object({
-  estimation: z.string().describe("A high-level cost estimation report in HTML format."),
+  estimation: z
+    .string()
+    .describe("A high-level cost estimation report in HTML format."),
 });
-export type GenerateCostEstimationOutput = z.infer<typeof GenerateCostEstimationOutputSchema>;
-
+export type GenerateCostEstimationOutput = z.infer<
+  typeof GenerateCostEstimationOutputSchema
+>;
 
 export async function generateCostEstimation(
   input: GenerateCostEstimationInput
@@ -30,7 +35,7 @@ export async function generateCostEstimation(
 }
 
 const prompt = ai.definePrompt({
-  name: 'generateCostEstimationPrompt',
+  name: "generateCostEstimationPrompt",
   input: { schema: GenerateCostEstimationInputSchema },
   output: { schema: GenerateCostEstimationOutputSchema },
   prompt: `You are an expert project manager. Based on the following requirements, provide a high-level, speculative cost estimation for the project.
@@ -52,7 +57,7 @@ Output the entire response as a single HTML string. Use a <table> with <thead>, 
 
 const generateCostEstimationFlow = ai.defineFlow(
   {
-    name: 'generateCostEstimationFlow',
+    name: "generateCostEstimationFlow",
     inputSchema: GenerateCostEstimationInputSchema,
     outputSchema: GenerateCostEstimationOutputSchema,
   },
