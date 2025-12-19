@@ -1,5 +1,4 @@
-
-'use server';
+"use server";
 
 /**
  * @fileOverview This flow generates an activity diagram in Mermaid syntax.
@@ -9,37 +8,65 @@
  * - GenerateActivityDiagramOutput - The return type for the function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import { Requirement } from '@/lib/types';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
+import { Requirement } from "@/lib/types";
 
 const GenerateActivityDiagramInputSchema = z.object({
   requirements: z.array(z.custom<Requirement>()),
 });
-export type GenerateActivityDiagramInput = z.infer<typeof GenerateActivityDiagramInputSchema>;
+export type GenerateActivityDiagramInput = z.infer<
+  typeof GenerateActivityDiagramInputSchema
+>;
 
 const NodeSchema = z.object({
-  id: z.string().describe("A short, unique, single-word identifier for the node (e.g., 'A', 'B', 'C1')."),
-  label: z.string().describe("The user-visible text for the node. Keep it concise. Do not use special characters like /, (, or )."),
-  type: z.enum(['action', 'decision', 'start', 'end']).describe("The shape of the node. Use 'action' for rectangular boxes, 'decision' for diamond shapes, 'start' for the beginning, and 'end' for the termination."),
+  id: z
+    .string()
+    .describe(
+      "A short, unique, single-word identifier for the node (e.g., 'A', 'B', 'C1')."
+    ),
+  label: z
+    .string()
+    .describe(
+      "The user-visible text for the node. Keep it concise. Do not use special characters like /, (, or )."
+    ),
+  type: z
+    .enum(["action", "decision", "start", "end"])
+    .describe(
+      "The shape of the node. Use 'action' for rectangular boxes, 'decision' for diamond shapes, 'start' for the beginning, and 'end' for the termination."
+    ),
 });
 
 const EdgeSchema = z.object({
   from: z.string().describe("The ID of the starting node."),
   to: z.string().describe("The ID of the ending node."),
-  label: z.string().optional().describe("An optional label for the edge, typically used for 'Yes' or 'No' paths from a decision node."),
+  label: z
+    .string()
+    .optional()
+    .describe(
+      "An optional label for the edge, typically used for 'Yes' or 'No' paths from a decision node."
+    ),
 });
 
 const DiagramStructureSchema = z.object({
-  nodes: z.array(NodeSchema).describe("An array of all the nodes in the diagram."),
-  edges: z.array(EdgeSchema).describe("An array of the connections between the nodes."),
+  nodes: z
+    .array(NodeSchema)
+    .describe("An array of all the nodes in the diagram."),
+  edges: z
+    .array(EdgeSchema)
+    .describe("An array of the connections between the nodes."),
 });
 
 const GenerateActivityDiagramOutputSchema = z.object({
-  diagram: z.string().describe("The complete, final activity diagram in valid Mermaid.js 'flowchart TD' syntax."),
+  diagram: z
+    .string()
+    .describe(
+      "The complete, final activity diagram in valid Mermaid.js 'flowchart TD' syntax."
+    ),
 });
-export type GenerateActivityDiagramOutput = z.infer<typeof GenerateActivityDiagramOutputSchema>;
-
+export type GenerateActivityDiagramOutput = z.infer<
+  typeof GenerateActivityDiagramOutputSchema
+>;
 
 export async function generateActivityDiagram(
   input: GenerateActivityDiagramInput
@@ -48,7 +75,7 @@ export async function generateActivityDiagram(
 }
 
 const prompt = ai.definePrompt({
-  name: 'generateActivityDiagramPrompt',
+  name: "generateActivityDiagramPrompt",
   input: { schema: GenerateActivityDiagramInputSchema },
   output: { schema: DiagramStructureSchema },
   prompt: `You are an expert system designer. Your task is to convert a list of project requirements into a structured activity diagram format.
@@ -76,49 +103,52 @@ Provide only the JSON object as your output.
 
 const generateActivityDiagramFlow = ai.defineFlow(
   {
-    name: 'generateActivityDiagramFlow',
+    name: "generateActivityDiagramFlow",
     inputSchema: GenerateActivityDiagramInputSchema,
     outputSchema: GenerateActivityDiagramOutputSchema,
   },
   async (input) => {
     const { output } = await prompt(input);
     if (!output?.nodes || !output?.edges) {
-      throw new Error('Failed to generate diagram structure');
+      throw new Error("Failed to generate diagram structure");
     }
 
     const { nodes, edges } = output;
 
-    let mermaidSyntax = 'flowchart TD\n';
+    let mermaidSyntax = "flowchart TD\n";
 
     // Sanitize labels to prevent Mermaid syntax errors
-    const sanitize = (text: string) => text.replace(/["]/g, '').replace(/[/]/g, '-').replace(/[\(\)]/g, '');
-
+    const sanitize = (text: string) =>
+      text
+        .replace(/["]/g, "")
+        .replace(/[/]/g, "-")
+        .replace(/[\(\)]/g, "");
 
     // Add node definitions
-    nodes.forEach(node => {
-        const label = sanitize(node.label);
-        switch (node.type) {
-            case 'start':
-            case 'end':
-                mermaidSyntax += `    ${node.id}[("${label}")]\n`;
-                break;
-            case 'action':
-                mermaidSyntax += `    ${node.id}["${label}"]\n`;
-                break;
-            case 'decision':
-                mermaidSyntax += `    ${node.id}{"${label}"}\n`;
-                break;
-        }
+    nodes.forEach((node) => {
+      const label = sanitize(node.label);
+      switch (node.type) {
+        case "start":
+        case "end":
+          mermaidSyntax += `    ${node.id}[("${label}")]\n`;
+          break;
+        case "action":
+          mermaidSyntax += `    ${node.id}["${label}"]\n`;
+          break;
+        case "decision":
+          mermaidSyntax += `    ${node.id}{"${label}"}\n`;
+          break;
+      }
     });
 
     // Add edge definitions
-    edges.forEach(edge => {
-        if (edge.label) {
-            const label = sanitize(edge.label);
-            mermaidSyntax += `    ${edge.from} -->|${label}| ${edge.to}\n`;
-        } else {
-            mermaidSyntax += `    ${edge.from} --> ${edge.to}\n`;
-        }
+    edges.forEach((edge) => {
+      if (edge.label) {
+        const label = sanitize(edge.label);
+        mermaidSyntax += `    ${edge.from} -->|${label}| ${edge.to}\n`;
+      } else {
+        mermaidSyntax += `    ${edge.from} --> ${edge.to}\n`;
+      }
     });
 
     return { diagram: mermaidSyntax };
