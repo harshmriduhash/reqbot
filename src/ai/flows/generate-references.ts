@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 /**
  * @fileOverview This flow generates the references section of the report.
@@ -8,19 +8,22 @@
  * - GenerateReferencesOutput - The return type for the function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
 
 const GenerateReferencesInputSchema = z.object({
   conversationHistory: z.string(),
 });
-export type GenerateReferencesInput = z.infer<typeof GenerateReferencesInputSchema>;
+export type GenerateReferencesInput = z.infer<
+  typeof GenerateReferencesInputSchema
+>;
 
 const GenerateReferencesOutputSchema = z.object({
   references: z.string().describe("The references section in HTML format."),
 });
-export type GenerateReferencesOutput = z.infer<typeof GenerateReferencesOutputSchema>;
-
+export type GenerateReferencesOutput = z.infer<
+  typeof GenerateReferencesOutputSchema
+>;
 
 export async function generateReferences(
   input: GenerateReferencesInput
@@ -29,7 +32,7 @@ export async function generateReferences(
 }
 
 const prompt = ai.definePrompt({
-  name: 'generateReferencesPrompt',
+  name: "generateReferencesPrompt",
   input: { schema: GenerateReferencesInputSchema },
   output: { schema: GenerateReferencesOutputSchema },
   prompt: `You are an expert documentation specialist. The following is a conversation history between a user and an AI business analyst (ReqBot).
@@ -47,7 +50,7 @@ Output the entire response as a single HTML string. Use a heading (<h3>) for "So
 
 const generateReferencesFlow = ai.defineFlow(
   {
-    name: 'generateReferencesFlow',
+    name: "generateReferencesFlow",
     inputSchema: GenerateReferencesInputSchema,
     outputSchema: GenerateReferencesOutputSchema,
   },
