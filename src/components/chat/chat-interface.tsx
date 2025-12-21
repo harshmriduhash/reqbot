@@ -1,28 +1,39 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { Loader2, Send, FileJson, FileText, Mic, StopCircle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import ChatMessage from '@/components/chat/chat-message';
-import RequirementsDisplay from '@/components/chat/requirements-display';
-import type { Message, Requirement } from '@/lib/types';
-import { extractRequirements, getAiChatResponse, getAiSpeechResponse } from '@/app/actions';
-import { useRecord } from '@/hooks/use-record';
+import { useState, useRef, useEffect, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Loader2,
+  Send,
+  FileJson,
+  FileText,
+  Mic,
+  StopCircle,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import ChatMessage from "@/components/chat/chat-message";
+import RequirementsDisplay from "@/components/chat/requirements-display";
+import type { Message, Requirement } from "@/lib/types";
+import {
+  extractRequirements,
+  getAiChatResponse,
+  getAiSpeechResponse,
+} from "@/app/actions";
+import { useRecord } from "@/hooks/use-record";
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: 'init',
+      id: "init",
       text: "Hello! I'm ReqBot. Please describe the project or system you want to build. What are the key features and goals?",
-      sender: 'ai',
+      sender: "ai",
       timestamp: new Date(),
     },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isExtracting, startExtracting] = useTransition();
   const [isGeneratingReport, startGeneratingReport] = useTransition();
   const [isResponding, startResponding] = useTransition();
@@ -48,15 +59,15 @@ export default function ChatInterface() {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     }
   }, [messages]);
 
   const getConversationHistory = (msgs: Message[]) => {
     return msgs
-      .map((msg) => `${msg.sender === 'user' ? 'User' : 'AI'}: ${msg.text}`)
-      .join('\n');
+      .map((msg) => `${msg.sender === "user" ? "User" : "AI"}: ${msg.text}`)
+      .join("\n");
   };
 
   const playAudio = (audioData: string) => {
@@ -69,31 +80,31 @@ export default function ChatInterface() {
     e: React.FormEvent | React.KeyboardEvent
   ) => {
     e.preventDefault();
-    if (input.trim() === '') return;
+    if (input.trim() === "") return;
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
       text: input,
-      sender: 'user',
+      sender: "user",
       timestamp: new Date(),
     };
 
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
-setInput('');
+    setInput("");
 
     startResponding(async () => {
       const chatResult = await getAiChatResponse(newMessages);
       if (chatResult.error || !chatResult.response) {
         toast({
-          variant: 'destructive',
-          title: 'AI Response Error',
-          description: chatResult.error || 'An unknown error occurred.',
+          variant: "destructive",
+          title: "AI Response Error",
+          description: chatResult.error || "An unknown error occurred.",
         });
         const errorResponse: Message = {
           id: crypto.randomUUID(),
           text: "Sorry, I'm having trouble responding right now.",
-          sender: 'ai',
+          sender: "ai",
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, errorResponse]);
@@ -103,7 +114,7 @@ setInput('');
       const aiResponse: Message = {
         id: crypto.randomUUID(),
         text: chatResult.response,
-        sender: 'ai',
+        sender: "ai",
         timestamp: new Date(),
       };
 
@@ -119,16 +130,16 @@ setInput('');
       const result = await extractRequirements(conversationHistory);
       if (result.error || !result.requirements) {
         toast({
-          variant: 'destructive',
-          title: 'Extraction Failed',
-          description: result.error || 'An unknown error occurred.',
+          variant: "destructive",
+          title: "Extraction Failed",
+          description: result.error || "An unknown error occurred.",
         });
       } else {
         setExtractedRequirements(result.requirements);
         toast({
-          title: 'Extraction Successful',
+          title: "Extraction Successful",
           description:
-            'Requirements have been extracted from the conversation.',
+            "Requirements have been extracted from the conversation.",
         });
       }
     });
@@ -141,26 +152,26 @@ setInput('');
       const result = await extractRequirements(conversationHistory);
       if (result.error || !result.requirements) {
         toast({
-          variant: 'destructive',
-          title: 'Extraction Failed',
-          description: result.error || 'Could not generate report.',
+          variant: "destructive",
+          title: "Extraction Failed",
+          description: result.error || "Could not generate report.",
         });
         return;
       }
 
       try {
         localStorage.setItem(
-          'requirements',
+          "requirements",
           JSON.stringify(result.requirements)
         );
-        localStorage.setItem('conversationHistory', conversationHistory);
-        router.push('/report');
+        localStorage.setItem("conversationHistory", conversationHistory);
+        router.push("/report");
       } catch (error) {
         toast({
-          variant: 'destructive',
-          title: 'Failed to generate report',
+          variant: "destructive",
+          title: "Failed to generate report",
           description:
-            'Could not save requirements to local storage. It might be too large.',
+            "Could not save requirements to local storage. It might be too large.",
         });
       }
     });
@@ -211,12 +222,12 @@ setInput('');
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={
-                isRecording ? 'Listening...' : 'Describe a requirement...'
+                isRecording ? "Listening..." : "Describe a requirement..."
               }
               className="flex-1 resize-none"
               rows={1}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.key === "Enter" && !e.shiftKey) {
                   handleSendMessage(e);
                 }
               }}
