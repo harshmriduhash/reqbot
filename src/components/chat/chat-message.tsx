@@ -1,24 +1,27 @@
-'use client';
-import { Bot, User } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { cn } from '@/lib/utils';
-import type { Message } from '@/lib/types';
-import { Avatar } from '@/components/ui/avatar';
-import { Button } from '../ui/button';
+"use client";
+import { Bot, User } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
+import type { Message } from "@/lib/types";
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "../ui/button";
 
 interface ChatMessageProps {
   message: Message;
   onPlayAudio?: (audio: string) => void;
 }
 
-export default function ChatMessage({ message, onPlayAudio }: ChatMessageProps) {
-  const isUser = message.sender === 'user';
+export default function ChatMessage({
+  message,
+  onPlayAudio,
+}: ChatMessageProps) {
+  const isUser = message.sender === "user";
 
   return (
     <div
       className={cn(
-        'flex items-start gap-3',
-        isUser ? 'justify-end' : 'justify-start'
+        "flex items-start gap-3",
+        isUser ? "justify-end" : "justify-start"
       )}
     >
       {!isUser && (
@@ -30,17 +33,17 @@ export default function ChatMessage({ message, onPlayAudio }: ChatMessageProps) 
       )}
       <div
         className={cn(
-          'flex flex-col gap-1',
-          isUser ? 'items-end' : 'items-start'
+          "flex flex-col gap-1",
+          isUser ? "items-end" : "items-start"
         )}
       >
         <div className="flex items-center gap-2">
           <div
             className={cn(
-              'max-w-xs md:max-w-md lg:max-w-lg rounded-lg px-4 py-2 text-sm shadow-sm animate-fade-in-up',
+              "max-w-xs md:max-w-md lg:max-w-lg rounded-lg px-4 py-2 text-sm shadow-sm animate-fade-in-up",
               isUser
-                ? 'bg-primary text-primary-foreground rounded-br-none'
-                : 'bg-muted rounded-bl-none'
+                ? "bg-primary text-primary-foreground rounded-br-none"
+                : "bg-muted rounded-bl-none"
             )}
           >
             <p className="whitespace-pre-wrap">{message.text}</p>
@@ -51,9 +54,9 @@ export default function ChatMessage({ message, onPlayAudio }: ChatMessageProps) 
           {formatDistanceToNow(message.timestamp, { addSuffix: true })}
         </span>
       </div>
-       {isUser && (
+      {isUser && (
         <Avatar className="h-8 w-8">
-           <div className="flex h-full w-full items-center justify-center rounded-full bg-secondary">
+          <div className="flex h-full w-full items-center justify-center rounded-full bg-secondary">
             <User className="h-5 w-5 text-secondary-foreground" />
           </div>
         </Avatar>
