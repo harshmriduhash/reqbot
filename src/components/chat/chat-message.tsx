@@ -1,7 +1,6 @@
 'use client';
 import { Bot, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-
 import { cn } from '@/lib/utils';
 import type { Message } from '@/lib/types';
 import { Avatar } from '@/components/ui/avatar';
