@@ -42,7 +42,6 @@ const Mermaid = ({ chart }: MermaidProps) => {
         }
       }
     };
-    
     renderMermaid();
 
   }, [chart, diagramId, resolvedTheme]);
